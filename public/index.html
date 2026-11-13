@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — Portal do Sistema</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0%, #090d16 100%);
+      color: #f8fafc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .card {
+      background: rgba(30, 41, 59, 0.85);
+      backdrop-filter: blur(12px);
+      padding: 2.5rem 2rem;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.35rem;
+    }
+
+    .subtitle {
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #cbd5e1;
+      margin-bottom: 0.4rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 1.5rem 0;
+      color: #64748b;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #334155;
+    }
+
+    .divider:not(:empty)::before {
+      margin-right: 0.75rem;
+    }
+
+    .divider:not(:empty)::after {
+      margin-left: 0.75rem;
+    }
+
+    .google-wrapper {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .alert {
+      display: none;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fbbf24;
+      padding: 0.7rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Tela do Usuário Logado */
+    .profile-card {
+      text-align: center;
+    }
+
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid #3b82f6;
+      margin-bottom: 1rem;
+      object-fit: cover;
+    }
+
+    .badge-verified {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+
+    .btn-logout {
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 0.75rem;
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: #ef4444;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <!-- ESTADO DESLOGADO -->
+    <div id="login-view">
+      <div class="header">
+        <h2>Bem-vindo de volta</h2>
+        <p class="subtitle">Acesse sua conta para continuar</p>
+      </div>
+
+      <div id="form-alert" class="alert">
+        O login tradicional por senha não está conectado a um banco de dados neste demo. Utilize o botão <strong>Continuar com o Google</strong> abaixo.
+      </div>
+
+      <form onsubmit="handleTraditionalLogin(event)">
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" placeholder="seuemail@exemplo.com" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Senha</label>
+          <input type="password" id="password" placeholder="••••••••" required />
+        </div>
+
+        <button type="submit" class="btn-primary">Entrar</button>
+      </form>
+
+      <div class="divider">ou</div>
+
+      <div class="google-wrapper">
+        <div id="botao-google"></div>
+      </div>
+    </div>
+
+    <!-- ESTADO LOGADO -->
+    <div id="user-view" class="profile-card hidden">
+      <img id="user-pic" class="avatar" src="" alt="Foto de perfil" />
+      <div>
+        <span class="badge-verified">✓ Sessão Validada no Servidor</span>
+      </div>
+      <h2 id="user-name"></h2>
+      <p id="user-email" class="subtitle" style="margin-top: 0.25rem;"></p>
+
+      <button class="btn-logout" onclick="fazerLogout()">Encerrar Sessão</button>
+    </div>
+  </div>
+
+  <script>
+    function handleTraditionalLogin(event) {
+      event.preventDefault();
+      document.getElementById('form-alert').style.display = 'block';
+    }
+
+    async function inicializar() {
+      const sessionRes = await fetch('/api/me');
+      if (sessionRes.ok) {
+        const data = await sessionRes.json();
+        mostrarUsuario(data.user);
+        return;
+      }
+
+      const configRes = await fetch('/api/config');
+      const { clientId } = await configRes.json();
+
+      google.accounts.id.initialize({
+        client_id: clientId,
+        callback: handleCredentialResponse
+      });
+
+      google.accounts.id.renderButton(
+        document.getElementById('botao-google'),
+        {
+          theme: 'filled_black',
+          size: 'large',
+          width: 336,
+          text: 'continue_with',
+          shape: 'rectangular'
+        }
+      );
+    }
+
+    async function handleCredentialResponse(response) {
+      const res = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_token: response.credential })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        mostrarUsuario(data.user);
+      } else {
+        alert('Falha na autenticação: ' + (data.error || 'Erro desconhecido'));
+      }
+    }
+
+    function mostrarUsuario(user) {
+      document.getElementById('login-view').classList.add('hidden');
+      document.getElementById('user-view').classList.remove('hidden');
+      document.getElementById('user-pic').src = user.picture;
+      document.getElementById('user-name').textContent = user.name;
+      document.getElementById('user-email').textContent = user.email;
+    }
+
+    async function fazerLogout() {
+      await fetch('/api/logout', { method: 'POST' });
+      window.location.reload();
+    }
+
+    window.onload = inicializar;
+  </script>
+</body>
+</html>
