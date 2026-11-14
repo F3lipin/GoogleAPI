@@ -3,9 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login — Portal do Sistema</title>
+  <title>Portal da Cidadela — Acesso ao Reino</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-dark: #100c08;
+      --stone-card: #1c1611;
+      --stone-inner: #130f0b;
+      --gold-primary: #d4af37;
+      --gold-bright: #f3d06b;
+      --gold-dim: #7c6222;
+      --crimson-btn: #7f1d1d;
+      --crimson-hover: #991b1b;
+      --parchment-text: #f3e9d2;
+      --muted-ash: #a89984;
+      --emerald-seal: #15803d;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -13,134 +30,193 @@
     }
 
     body {
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: radial-gradient(circle at top, #1e293b 0%, #090d16 100%);
-      color: #f8fafc;
+      font-family: 'Crimson Pro', Georgia, serif;
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 50% 15%, rgba(212, 175, 55, 0.08) 0%, transparent 55%),
+        radial-gradient(circle at 50% 100%, rgba(127, 29, 29, 0.14) 0%, transparent 60%),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 2px, transparent 2px, transparent 8px);
+      color: var(--parchment-text);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 1rem;
+      padding: 1.5rem;
     }
 
     .card {
-      background: rgba(30, 41, 59, 0.85);
-      backdrop-filter: blur(12px);
-      padding: 2.5rem 2rem;
-      border-radius: 16px;
-      border: 1px solid rgba(148, 163, 184, 0.15);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      position: relative;
+      background: linear-gradient(180deg, #221a14 0%, var(--stone-card) 100%);
+      padding: 2.75rem 2.25rem;
+      border-radius: 6px;
+      border: 2px solid var(--gold-dim);
+      box-shadow: 
+        0 0 0 1px #090705,
+        0 0 0 5px #17120e,
+        0 0 0 6px rgba(212, 175, 55, 0.25),
+        0 25px 60px rgba(0, 0, 0, 0.85);
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
     }
+
+    /* Ornamentos de canto em dourado */
+    .corner {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-color: var(--gold-primary);
+      border-style: solid;
+      pointer-events: none;
+    }
+    .corner.tl { top: 8px; left: 8px; border-width: 2px 0 0 2px; }
+    .corner.tr { top: 8px; right: 8px; border-width: 2px 2px 0 0; }
+    .corner.bl { bottom: 8px; left: 8px; border-width: 0 0 2px 2px; }
+    .corner.br { bottom: 8px; right: 8px; border-width: 0 2px 2px 0; }
 
     .header {
       text-align: center;
       margin-bottom: 1.75rem;
     }
 
+    .crest {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: radial-gradient(circle, #2e2318 0%, #140f0a 100%);
+      border: 1.5px solid var(--gold-primary);
+      box-shadow: 0 0 18px rgba(212, 175, 55, 0.22);
+      color: var(--gold-bright);
+    }
 
     h2 {
-      font-size: 1.4rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
+      font-family: 'Cinzel', serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
       margin-bottom: 0.35rem;
     }
 
     .subtitle {
-      color: #94a3b8;
-      font-size: 0.9rem;
+      color: var(--muted-ash);
+      font-size: 1.05rem;
+      font-style: italic;
     }
 
     .form-group {
-      margin-bottom: 1rem;
+      margin-bottom: 1.15rem;
       text-align: left;
     }
 
     label {
       display: block;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: #cbd5e1;
-      margin-bottom: 0.4rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold-primary);
+      margin-bottom: 0.45rem;
     }
 
     input {
       width: 100%;
-      padding: 0.7rem 0.9rem;
-      border-radius: 8px;
-      border: 1px solid #334155;
-      background: #0f172a;
-      color: #f8fafc;
-      font-size: 0.95rem;
+      padding: 0.75rem 0.95rem;
+      border-radius: 4px;
+      border: 1px solid #4a3a28;
+      background: var(--stone-inner);
+      color: var(--parchment-text);
+      font-family: 'Crimson Pro', serif;
+      font-size: 1.05rem;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.75);
       transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input::placeholder {
+      color: #635647;
+      font-style: italic;
     }
 
     input:focus {
       outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      border-color: var(--gold-primary);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.75), 0 0 0 2px rgba(212, 175, 55, 0.2);
     }
 
     .btn-primary {
       width: 100%;
-      padding: 0.75rem;
+      padding: 0.85rem;
       margin-top: 0.5rem;
-      background: #3b82f6;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 600;
+      background: linear-gradient(180deg, #991b1b 0%, var(--crimson-btn) 100%);
+      color: var(--gold-bright);
+      border: 1px solid var(--gold-primary);
+      border-radius: 4px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
       cursor: pointer;
-      transition: background 0.2s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      transition: all 0.2s ease;
     }
 
     .btn-primary:hover {
-      background: #2563eb;
+      background: linear-gradient(180deg, #b91c1c 0%, var(--crimson-hover) 100%);
+      box-shadow: 0 0 16px rgba(212, 175, 55, 0.3);
+      transform: translateY(-1px);
     }
 
     .divider {
       display: flex;
       align-items: center;
       text-align: center;
-      margin: 1.5rem 0;
-      color: #64748b;
-      font-size: 0.8rem;
+      margin: 1.6rem 0;
+      color: var(--gold-dim);
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
     }
 
     .divider::before,
     .divider::after {
       content: '';
       flex: 1;
-      border-bottom: 1px solid #334155;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
     }
 
-    .divider:not(:empty)::before {
-      margin-right: 0.75rem;
-    }
-
-    .divider:not(:empty)::after {
-      margin-left: 0.75rem;
+    .divider span {
+      padding: 0 0.85rem;
     }
 
     .google-wrapper {
       display: flex;
       justify-content: center;
       width: 100%;
+      padding: 4px;
+      border-radius: 6px;
+      background: rgba(19, 15, 11, 0.6);
+      border: 1px solid rgba(212, 175, 55, 0.2);
     }
 
     .alert {
       display: none;
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.35);
-      color: #fbbf24;
-      padding: 0.7rem 0.9rem;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      margin-bottom: 1rem;
+      background: rgba(127, 29, 29, 0.28);
+      border: 1px solid #b45309;
+      border-left: 4px solid var(--gold-primary);
+      color: #fde68a;
+      padding: 0.75rem 0.95rem;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      margin-bottom: 1.15rem;
       line-height: 1.4;
     }
 
@@ -153,76 +229,107 @@
       text-align: center;
     }
 
-    .avatar {
-      width: 80px;
-      height: 80px;
+    .avatar-frame {
+      position: relative;
+      width: 92px;
+      height: 92px;
+      margin: 0 auto 1.1rem;
+      padding: 4px;
       border-radius: 50%;
-      border: 3px solid #3b82f6;
-      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--gold-bright), var(--gold-dim));
+      box-shadow: 0 0 24px rgba(212, 175, 55, 0.35);
+    }
+
+    .avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
       object-fit: cover;
+      border: 2px solid var(--stone-card);
     }
 
     .badge-verified {
-      display: inline-block;
-      background: rgba(16, 185, 129, 0.15);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.25rem 0.65rem;
-      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(21, 128, 61, 0.2);
+      color: #86efac;
+      border: 1px solid rgba(134, 239, 172, 0.35);
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.85rem;
+      border-radius: 3px;
       margin-bottom: 1rem;
     }
 
     .btn-logout {
       width: 100%;
-      margin-top: 1.5rem;
-      padding: 0.75rem;
-      background: rgba(239, 68, 68, 0.15);
-      color: #f87171;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      border-radius: 8px;
+      margin-top: 1.75rem;
+      padding: 0.8rem;
+      background: transparent;
+      color: #fca5a5;
+      border: 1px solid #991b1b;
+      border-radius: 4px;
       cursor: pointer;
-      font-weight: 600;
-      font-size: 0.9rem;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
       transition: all 0.2s;
     }
 
     .btn-logout:hover {
-      background: #ef4444;
-      color: white;
+      background: rgba(153, 27, 27, 0.35);
+      border-color: var(--gold-primary);
+      color: var(--gold-bright);
     }
   </style>
 </head>
 <body>
 
   <div class="card">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+
     <!-- ESTADO DESLOGADO -->
     <div id="login-view">
       <div class="header">
-        <h2>Bem-vindo de volta</h2>
-        <p class="subtitle">Acesse sua conta para continuar</p>
+        <div class="crest" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M12 8v8"/>
+            <path d="M8 12h8"/>
+          </svg>
+        </div>
+        <h2>Portal da Cidadela</h2>
+        <p class="subtitle">Identifique-se para cruzar os portões</p>
       </div>
 
       <div id="form-alert" class="alert">
-        O login tradicional por senha não está conectado a um banco de dados neste demo. Utilize o botão <strong>Continuar com o Google</strong> abaixo.
+        Os pergaminhos locais de senha não estão ativos nesta demonstração. Apresente seu selo real clicando em <strong>Continuar com o Google</strong> abaixo.
       </div>
 
       <form onsubmit="handleTraditionalLogin(event)">
         <div class="form-group">
-          <label for="email">E-mail</label>
-          <input type="email" id="email" placeholder="seuemail@exemplo.com" required />
+          <label for="email">Correio do Mensageiro (E-mail)</label>
+          <input type="email" id="email" placeholder="cavaleiro@reino.com" required />
         </div>
 
         <div class="form-group">
-          <label for="password">Senha</label>
+          <label for="password">Palavra-Passe Secreta</label>
           <input type="password" id="password" placeholder="••••••••" required />
         </div>
 
-        <button type="submit" class="btn-primary">Entrar</button>
+        <button type="submit" class="btn-primary">Cruzar os Portões</button>
       </form>
 
-      <div class="divider">ou</div>
+      <div class="divider"><span>ou via selo real</span></div>
 
       <div class="google-wrapper">
         <div id="botao-google"></div>
@@ -231,14 +338,16 @@
 
     <!-- ESTADO LOGADO -->
     <div id="user-view" class="profile-card hidden">
-      <img id="user-pic" class="avatar" src="" alt="Foto de perfil" />
+      <div class="avatar-frame">
+        <img id="user-pic" class="avatar" src="" alt="Retrato do Viajante" />
+      </div>
       <div>
-        <span class="badge-verified">✓ Sessão Validada no Servidor</span>
+        <span class="badge-verified">✦ Selo Validado pelo Conselho</span>
       </div>
       <h2 id="user-name"></h2>
-      <p id="user-email" class="subtitle" style="margin-top: 0.25rem;"></p>
+      <p id="user-email" class="subtitle" style="margin-top: 0.35rem;"></p>
 
-      <button class="btn-logout" onclick="fazerLogout()">Encerrar Sessão</button>
+      <button class="btn-logout" onclick="fazerLogout()">Deixar a Cidadela (Sair)</button>
     </div>
   </div>
 
@@ -269,7 +378,7 @@
         {
           theme: 'filled_black',
           size: 'large',
-          width: 336,
+          width: 332,
           text: 'continue_with',
           shape: 'rectangular'
         }
